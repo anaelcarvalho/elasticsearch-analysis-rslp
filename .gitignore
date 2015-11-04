@@ -1,0 +1,6 @@
+.*
+!.gitignore
+**/target/
+**/bin/*
+*.log
+**/.gitignore
