@@ -401,7 +401,11 @@ public class RSLPTokenFilterTests extends ESTestCase {
     	testWords.put("menina", "menin");
     	testWords.put("grande", "grand");
     	testWords.put("menino", "menin");
-    	
+    	testWords.put("porquinho", "porc");
+    	testWords.put("riquinho", "ric");
+    	testWords.put("mesquinho", "mesq");
+    	testWords.put("amesquinho", "amesq");
+
     	return testWords;
     }
     

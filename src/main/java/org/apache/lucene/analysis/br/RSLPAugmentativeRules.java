@@ -30,7 +30,7 @@ public enum RSLPAugmentativeRules {
 	AUGMENTATIVE_RULE_4(new char[]{'é','s','i','m','o'},8,null,null),
 	AUGMENTATIVE_RULE_5(new char[]{'é','r','r','i','m','o'},10,null,null),
 	AUGMENTATIVE_RULE_6(new char[]{'z','i','n','h','o'},7,null,null),
-	AUGMENTATIVE_RULE_7(new char[]{'q','u','i','n','h','o'},10,new char[]{'c'},null),
+	AUGMENTATIVE_RULE_7(new char[]{'q','u','i','n','h','o'},8,new char[]{'c'},new String[]{"amesquinho","mesquinho"}),
 	AUGMENTATIVE_RULE_8(new char[]{'u','i','n','h','o'},9,null,null),
 	AUGMENTATIVE_RULE_9(new char[]{'a','d','i','n','h','o'},9,null,null),
 	AUGMENTATIVE_RULE_10(new char[]{'i','n','h','o'},7,null,new String[]{"caminho","carinho","cominho"}),
