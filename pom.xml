@@ -3,7 +3,7 @@
   <groupId>org.elasticsearch</groupId>
   <artifactId>elasticsearch-analysis-rslp</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>Elasticsearch RSLP Analysis plugin</name>
   <description>Provides Brazilian Portuguese RSLP stemming support for Elasticsearch</description>
   <inceptionYear>2015</inceptionYear>

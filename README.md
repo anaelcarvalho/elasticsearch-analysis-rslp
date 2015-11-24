@@ -6,19 +6,21 @@ RSLP stemmer plugin integrates the RSLP stemming algorithm for Brazilian Portugu
 ## Installing
 
 ```sh
-bin/plugin install https://github.com/anaelcarvalho/elasticsearch-analysis-rslp/blob/master/dist/elasticsearch-analysis-rslp-1.0.0.zip?raw=true
+bin/plugin install https://github.com/anaelcarvalho/elasticsearch-analysis-rslp/blob/master/dist/elasticsearch-analysis-rslp-1.0.1.zip?raw=true
 ```
 
 ## Building from source
 
 ```bash
 mvn clean package
-bin/plugin install file:target/releases/elasticsearch-analysis-rslp-1.0.0.zip
+bin/plugin install file:target/releases/elasticsearch-analysis-rslp-1.0.1.zip
 ```
 
 ## Compatibility
 
 |RSLP Stemmer Plugin|Elasticsearch|
+|---|---|
+| 1.0.1|2.0+|
 |---|---|
 | 1.0.0|2.0+|
 
