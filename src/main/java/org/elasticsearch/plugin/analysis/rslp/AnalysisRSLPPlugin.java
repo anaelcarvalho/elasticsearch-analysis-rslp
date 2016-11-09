@@ -14,36 +14,23 @@
 
 package org.elasticsearch.plugin.analysis.rslp;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Map;
 
-import org.elasticsearch.common.inject.Module;
-import org.elasticsearch.index.analysis.AnalysisModule;
-import org.elasticsearch.index.analysis.RSLPAnalysisBinderProcessor;
-import org.elasticsearch.indices.analysis.RSLPIndicesAnalysisModule;
+import org.elasticsearch.index.analysis.RSLPTokenFilterFactory;
+import org.elasticsearch.index.analysis.TokenFilterFactory;
+import org.elasticsearch.indices.analysis.AnalysisModule.AnalysisProvider;
+import org.elasticsearch.plugins.AnalysisPlugin;
 import org.elasticsearch.plugins.Plugin;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * @author anaelcarvalho
  */
-public class AnalysisRSLPPlugin extends Plugin {
+public class AnalysisRSLPPlugin extends Plugin implements AnalysisPlugin {
 
 	@Override
-	public String name() {
-		return "analysis-rslp";
+	public Map<String, AnalysisProvider<TokenFilterFactory>> getTokenFilters() {
+		return singletonMap("br_rslp", RSLPTokenFilterFactory::new);
 	}
-
-	@Override
-	public String description() {
-		return "Brazilian Portuguese RSLP stemmer plugin";
-	}
-
-	@Override
-	public Collection<Module> nodeModules() {
-		return Collections.<Module>singletonList(new RSLPIndicesAnalysisModule());
-	}
-
-	public void onModule(AnalysisModule module) {
-        module.addProcessor(new RSLPAnalysisBinderProcessor());
-    }
 }

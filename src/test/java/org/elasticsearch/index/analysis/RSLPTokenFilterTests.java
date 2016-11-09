@@ -25,21 +25,14 @@ import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
+import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.elasticsearch.Version;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.common.inject.Injector;
-import org.elasticsearch.common.inject.ModulesBuilder;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.SettingsModule;
-import org.elasticsearch.env.Environment;
-import org.elasticsearch.env.EnvironmentModule;
 import org.elasticsearch.index.Index;
-import org.elasticsearch.index.IndexNameModule;
-import org.elasticsearch.index.settings.IndexSettingsModule;
-import org.elasticsearch.indices.analysis.IndicesAnalysisService;
+import org.elasticsearch.plugin.analysis.rslp.AnalysisRSLPPlugin;
 import org.elasticsearch.test.ESTestCase;
 import org.junit.Test;
 
@@ -50,15 +43,15 @@ public class RSLPTokenFilterTests extends ESTestCase {
 	
     @Test
     public void testRSLPRules() throws Exception {
-        Index index = new Index("test");
-        Settings settings = Settings.settingsBuilder()
+        Index index = new Index("test", "_na_");
+        Settings settings = Settings.builder()
                 .put(IndexMetaData.SETTING_VERSION_CREATED, Version.CURRENT)
-                .put("path.home", createTempDir())
                 .put("index.analysis.filter.myStemmer.type", "br_rslp")
                 .build();
-        AnalysisService analysisService = createAnalysisService(index, settings);
 
-        TokenFilterFactory filterFactory = analysisService.tokenFilter("myStemmer");
+        AnalysisService analysisService = createAnalysisService(index, settings, new AnalysisRSLPPlugin());
+
+        TokenFilterFactory filterFactory = analysisService.tokenFilter("br_rslp");
 
         Tokenizer tokenizer = new KeywordTokenizer();
         
@@ -79,15 +72,15 @@ public class RSLPTokenFilterTests extends ESTestCase {
     
     @Test
     public void testRSLPPhrases() throws Exception {
-        Index index = new Index("test");
-        Settings settings = Settings.settingsBuilder()
+        Index index = new Index("test", "_na_");
+        Settings settings = Settings.builder()
                 .put(IndexMetaData.SETTING_VERSION_CREATED, Version.CURRENT)
-                .put("path.home", createTempDir())
                 .put("index.analysis.analyzer.myAnalyzer.type", "custom")
                 .put("index.analysis.analyzer.myAnalyzer.tokenizer", "standard")
                 .put("index.analysis.analyzer.myAnalyzer.filter", "br_rslp")
                 .build();
-        AnalysisService analysisService = createAnalysisService(index, settings);
+
+        AnalysisService analysisService = createAnalysisService(index, settings, new AnalysisRSLPPlugin());
 
         Analyzer analyzer = analysisService.analyzer("myAnalyzer");
         
@@ -110,19 +103,6 @@ public class RSLPTokenFilterTests extends ESTestCase {
         }
     }
 
-    private AnalysisService createAnalysisService(Index index, Settings settings) {
-        Injector parentInjector = new ModulesBuilder().add(new SettingsModule(settings), 
-        		new EnvironmentModule(new Environment(settings))).createInjector();
-        Injector injector = new ModulesBuilder().add(
-                new IndexSettingsModule(index, settings),
-                new IndexNameModule(index),
-                new AnalysisModule(settings, parentInjector.getInstance(IndicesAnalysisService.class))
-                	.addProcessor(new RSLPAnalysisBinderProcessor()))
-                	.createChildInjector(parentInjector);
-
-        return injector.getInstance(AnalysisService.class);
-    }
-    
     private Map<String,String> buildWordList() {
     	Map<String,String> testWords = new HashMap<String,String>();
     	testWords.put("bons", "bom");

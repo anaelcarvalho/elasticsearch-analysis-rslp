@@ -14,22 +14,13 @@
 
 package org.elasticsearch.index.analysis;
 
-import static org.elasticsearch.common.settings.Settings.settingsBuilder;
-import static org.elasticsearch.common.settings.Settings.Builder.EMPTY_SETTINGS;
 import static org.hamcrest.Matchers.instanceOf;
 
-import org.elasticsearch.Version;
-import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.common.inject.Injector;
-import org.elasticsearch.common.inject.ModulesBuilder;
+import java.io.IOException;
+
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.SettingsModule;
-import org.elasticsearch.env.Environment;
-import org.elasticsearch.env.EnvironmentModule;
 import org.elasticsearch.index.Index;
-import org.elasticsearch.index.IndexNameModule;
-import org.elasticsearch.index.settings.IndexSettingsModule;
-import org.elasticsearch.indices.analysis.IndicesAnalysisService;
+import org.elasticsearch.plugin.analysis.rslp.AnalysisRSLPPlugin;
 import org.elasticsearch.test.ESTestCase;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
@@ -40,24 +31,11 @@ import org.junit.Test;
 public class RSLPAnalysisTests extends ESTestCase {
 
     @Test
-    public void testDefaultsRSLPAnalysis() {
-        Index index = new Index("test");
-        Settings settings = settingsBuilder()
-                .put("path.home", createTempDir())
-                .put(IndexMetaData.SETTING_VERSION_CREATED, Version.CURRENT)
-                .build();
-        Injector parentInjector = new ModulesBuilder().add(new SettingsModule(EMPTY_SETTINGS), 
-        		new EnvironmentModule(new Environment(settings))).createInjector();
-        Injector injector = new ModulesBuilder().add(
-                new IndexSettingsModule(index, settings),
-                new IndexNameModule(index),
-                new AnalysisModule(EMPTY_SETTINGS, parentInjector.getInstance(IndicesAnalysisService.class))
-                	.addProcessor(new RSLPAnalysisBinderProcessor()))
-                	.createChildInjector(parentInjector);
+    public void testDefaultsRSLPAnalysis() throws IOException {
+        AnalysisService analysisService = createAnalysisService(new Index("test", "_na_"), Settings.EMPTY, new AnalysisRSLPPlugin());
 
-        AnalysisService analysisService = injector.getInstance(AnalysisService.class);
+        TokenFilterFactory tokenizerFactory = analysisService.tokenFilter("br_rslp");
 
-        TokenFilterFactory tokenFilterFactory = analysisService.tokenFilter("br_rslp");
-        MatcherAssert.assertThat(tokenFilterFactory, instanceOf(RSLPTokenFilterFactory.class));
+        MatcherAssert.assertThat(tokenizerFactory, instanceOf(RSLPTokenFilterFactory.class));
     }
 }
